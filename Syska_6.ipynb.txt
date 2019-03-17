@@ -1,0 +1,328 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Zad 1**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "1. Metoda analityczna 0.43233235838169365\n",
+      "2. Metoda prostokątów : 0.7516073622040276  różnica: 0.3192750038223339\n",
+      "3. Wzór trapezów : 0.43393972058572117  różnica: 0.0016073622040275182\n",
+      "4. Wzór simpsona : 0.43247812041864586  różnica: 0.0001457620369522128\n",
+      "5. Wzór trapezów(10 przedziałów) : 0.42659141444525894  różnica: 0.005740943936434706\n",
+      "6. Wzór simpsona(10 przedziałów) : 0.43233272392367733  różnica: 3.6554198368232704e-07\n",
+      "7. Metoda romberga : 0.43233235838169437  różnica: 7.216449660063518e-16\n",
+      "8. Metoda quad : 0.4323323583816936  różnica: 5.551115123125783e-17\n",
+      "\n",
+      "\n",
+      "Najdokładniejszą metodą jest metoda quad. Bardzo dokładne wyniki dają też metody romberga i simpsona dla 10 podprzedziałów. W reszcie metod różnica dokładności jest o kilka rzędów wielkości większa niż w najlepszych metodach.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import math\n",
+    "import scipy\n",
+    "from scipy import integrate\n",
+    "import numpy as np\n",
+    "\n",
+    "w1=0.432332358381693654053000252\n",
+    "#print('1. Metoda analityczna', w1)\n",
+    "\n",
+    "\n",
+    "def f(x):\n",
+    "    return math.exp(-2*x)\n",
+    "\n",
+    "\n",
+    "def prost(fx,a,b):\n",
+    "    x=np.linspace(a,b,3)\n",
+    "    boki=0\n",
+    "    for i in x:\n",
+    "        boki+=fx(i)\n",
+    "    return (x[1]-x[0]) * boki\n",
+    "\n",
+    "#print(prost(f,0,1))\n",
+    "\n",
+    "def trap(fx,a,b):\n",
+    "    x=np.linspace(a,b,3)\n",
+    "    boki=0\n",
+    "    for i in range(len(x)-2):\n",
+    "        boki+=fx(x[i+1])\n",
+    "    boki+=(x[0]+x[len(x)-1])/2\n",
+    "    return (x[1]-x[0]) * boki\n",
+    "\n",
+    "def trap10(fx,a,b):\n",
+    "    x=np.linspace(a,b,10)\n",
+    "    boki=0\n",
+    "    for i in range(len(x)-2):\n",
+    "        boki+=fx(x[i+1])\n",
+    "    boki+=(x[0]+x[len(x)-1])/2\n",
+    "    return (x[1]-x[0]) * boki\n",
+    "#print(trap(f,0,1))\n",
+    "\n",
+    "def simpson(fx,a,b):\n",
+    "    x=np.linspace(a,b,3)\n",
+    "    wynik=0\n",
+    "    for i in range(len(x)-1):\n",
+    "        wynik+=(x[i+1]-x[i])*(fx(x[i])+4*fx((x[i]+x[i+1])/2)+fx(x[i+1]))/6\n",
+    "    return wynik\n",
+    "\n",
+    "def simpson10(fx,a,b):\n",
+    "    x=np.linspace(a,b,10)\n",
+    "    wynik=0\n",
+    "    for i in range(len(x)-1):\n",
+    "        wynik+=(x[i+1]-x[i])*(fx(x[i])+4*fx((x[i]+x[i+1])/2)+fx(x[i+1]))/6\n",
+    "    return wynik\n",
+    "\n",
+    "#print(simpson(f,0,1))\n",
+    "print('1. Metoda analityczna', w1)\n",
+    "print('2. Metoda prostokątów :', prost(f,0,1),' różnica:',abs(w1-prost(f,0,1)))\n",
+    "print('3. Wzór trapezów :', trap(f,0,1),' różnica:',abs(w1-trap(f,0,1)))\n",
+    "print('4. Wzór simpsona :', simpson(f,0,1),' różnica:',abs(w1-simpson(f,0,1)))\n",
+    "print('5. Wzór trapezów(10 przedziałów) :', trap10(f,0,1),' różnica:',abs(w1-trap10(f,0,1)))\n",
+    "print('6. Wzór simpsona(10 przedziałów) :', simpson10(f,0,1),' różnica:',abs(w1-simpson10(f,0,1)))\n",
+    "print('7. Metoda romberga :',scipy.integrate.romberg(f,0,1),' różnica:',abs(w1-scipy.integrate.romberg(f,0,1)))\n",
+    "quad,cos=scipy.integrate.quad(f,0,1)\n",
+    "print('8. Metoda quad :',quad,' różnica:',abs(w1-quad))\n",
+    "print('\\n\\nNajdokładniejszą metodą jest metoda quad. Bardzo dokładne wyniki dają też metody romberga i simpsona dla 10 podprzedziałów. W reszcie metod różnica dokładności jest o kilka rzędów wielkości większa niż w najlepszych metodach.')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Zad 2**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Wartość kontrolna                        :  1.6448536269514722\n",
+      "Wartośc otrzymana używając wzoru trapezów:  1.2816702877099284\n",
+      "Wartośc otrzymana używając wzoru simpsona:  1.6448534419500045\n",
+      "Zastosowanie wzoru simpsona daje wartość bardzo zbliżoną do wartości rferencyjnej. Różnica w wynikach jest dosyć duża ponieważ wielekrotnie wywoujemy metodę do określania przybliżonej wartości całkowania, więc używanie nie do końca dokładnej metody powoduje zwielokrotnianie się błędu. Dlatego też metoda trapezów dała bardzo słabe wyniki.\n"
+     ]
+    }
+   ],
+   "source": [
+    "from scipy import optimize\n",
+    "import scipy.stats\n",
+    "def f1(t):\n",
+    "    return math.exp((-t**2)/2)/math.sqrt(2*math.pi)\n",
+    "\n",
+    "def f1t(t):\n",
+    "    return trap10(f1,0,t)-0.45\n",
+    "\n",
+    "def f1s(t):\n",
+    "    return simpson10(f1,0,t)-0.45\n",
+    "\n",
+    "trapezy=optimize.newton(f1t,0.5,fprime=None, args=(), tol=1e-5)\n",
+    "simpsony=optimize.newton(f1s,0.5,fprime=None, args=(), tol=1e-5)\n",
+    "print('Wartość kontrolna                        : ',scipy.stats.norm.ppf(0.95))\n",
+    "print('Wartośc otrzymana używając wzoru trapezów: ',trapezy)\n",
+    "print('Wartośc otrzymana używając wzoru simpsona: ',simpsony)\n",
+    "print('Zastosowanie wzoru simpsona daje wartość bardzo zbliżoną do wartości rferencyjnej. Różnica w wynikach jest dosyć duża ponieważ wielekrotnie wywoujemy metodę do określania przybliżonej wartości całkowania, więc używanie nie do końca dokładnej metody powoduje zwielokrotnianie się błędu. Dlatego też metoda trapezów dała bardzo słabe wyniki.')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Zad 3**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Droga hamowania:  7.062500000000001\n",
+      "Średnia predkosc na podanym przedziale:  2.7375000000000003\n"
+     ]
+    }
+   ],
+   "source": [
+    "import scipy.interpolate\n",
+    "\n",
+    "t=[0.0,0.5,1.0,2.0,3.0,4.0]\n",
+    "a=[-4.5,-4.5,-2.3,-1.0,-0.5,0.0]\n",
+    "\n",
+    "poly=scipy.interpolate.interp1d(t,a)\n",
+    "\n",
+    "v=[]\n",
+    "\n",
+    "for i in t:\n",
+    "    v.append(scipy.integrate.quad(poly,i,4)[0])\n",
+    "\n",
+    "s=scipy.interpolate.interp1d(t,v)\n",
+    "\n",
+    "droga=np.fabs(scipy.integrate.quad(s,0,4)[0])\n",
+    "pnp=np.fabs(scipy.integrate.quad(s,0,0.5)[0])\n",
+    "print('Droga hamowania: ',droga)\n",
+    "print('Średnia predkosc na podanym przedziale: ',pnp)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Zad 4**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/anaconda3/lib/python3.7/site-packages/ipykernel_launcher.py:11: DeprecationWarning: object of type <class 'numpy.float64'> cannot be safely interpreted as an integer.\n",
+      "  # This is added back by InteractiveShellApp.init_path()\n",
+      "/anaconda3/lib/python3.7/site-packages/ipykernel_launcher.py:19: DeprecationWarning: object of type <class 'numpy.float64'> cannot be safely interpreted as an integer.\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Metoda trapezów:  301.3652273066044\n",
+      "Metoda Simpsona:  207.29730800829643\n",
+      "Metoda Romberga:  305.3887263152318\n",
+      "Metody Romberga i trapezów zwracają błędny wynik, poniewaz wynik odbiega od możliwego rozwiązania.\n",
+      "Jedynie metoda Simpsona podaje nam względnie dobry wynik.\n"
+     ]
+    },
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAABJwAAAJRCAYAAAAAiK2MAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDIuMi4zLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvIxREBQAAIABJREFUeJzs3XuQnVWdN/rvMo0krUSxEcYkaEINr4Kkm2C4DBMxgKWCHGwdLUBEHXQi4/jqXMIZJiMXPQXl60mVDl4PJcwwUwh4vAQLdQbU9MHUICEMSYaLc+C1EZJwjHaQJHSidHzOH9ndbwK57CZP9+7L51NFde+11372b3fXouFba/2eUlVVAAAAAKAuL2p1AQAAAABMLAInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgViMWOJVSbiilbCylPLDL2P9ZSvlZKWVtKeU7pZSX7/Lc35VSHi2l/Fcp5a27jL+tMfZoKeWykaoXAAAAgHqM5A6nf0rytueM3ZnkuKqqOpP8v0n+LklKKccmOT/J6xuv+XIpZUopZUqSLyU5K8mxSS5ozAUAAABgjGobqQtXVXVXKWX2c8bu2OXhT5O8u/H9O5LcUlXVb5P0llIeTXJS47lHq6r6eZKUUm5pzH1oX+992GGHVbNnz97XlDHlmWeeyUte8pJWlwHjgvUCzbFWoHnWCzTPeoHmTcT1ct999/26qqpXNjN3xAKnJlyc5NbG9zOzM4AatK4xliRPPGf85P1dePbs2Vm1alUdNY6Knp6eLFy4sNVlwLhgvUBzrBVonvUCzbNeoHkTcb2UUn7R7NyWBE6llL9PMpDkpsGhPUyrsucjf9VerrkoyaIkOeKII9LT03PghY6SrVu3jqt6oZWsF2iOtQLNs16gedYLNG+yr5dRD5xKKR9Ick6SM6uqGgyP1iU5cpdps5JsaHy/t/HdVFV1XZLrkmT+/PnVeEoRJ2LqCSPFeoHmWCvQPOsFmme9QPMm+3oZyabhz1NKeVuSv01yblVV/bs89d0k55dSDi6lzElydJKVSe5NcnQpZU4p5cXZ2Vj8u6NZMwAAAADDM2I7nEopNydZmOSwUsq6JFdm513pDk5yZyklSX5aVdUlVVU9WEr5RnY2Ax9I8hdVVe1oXOdjSf4tyZQkN1RV9eBI1QwAAAA837PPPpt169Zl+/btrS5l3HjZy16Whx9+uNVlvCBTp07NrFmzctBBB73ga4zkXeou2MPw9fuYf3WSq/cw/v0k36+xNAAAAGAY1q1bl0MOOSSzZ89OYwMJ+7Fly5YccsghrS5j2KqqSl9fX9atW5c5c+a84OuM6pE6AAAAYPzZvn17Ojo6hE2TQCklHR0dB7ybTeAEAAAA7JewafKo43ctcAIAAACgVgInAAAAYMwrpeSiiy4aejwwMJBXvvKVOeecc/b5utWrV+f73x9+a+jZs2fn17/+ddPzP//5z6e/v3/Y7zNRCZwAAACAMe8lL3lJHnjggWzbti1Jcuedd2bmzJn7fd0LDZyGa1+B044dO0b8/ccagRMAAABQq829y9K7bEEe+fpR6V22IJt7l9Vy3bPOOivf+973kiQ333xzLrjggqHnnnnmmVx88cU58cQTM2/evNx222353e9+lyuuuCK33nprjj/++Nx6663ZtGlTuru709nZmVNOOSVr165NkvT19eUtb3lL5s2bl4985COpqmro2t3d3XnDG96Q17/+9bnuuuueV9e1116bDRs25PTTT8/pp5+eJHnVq16VK664IieffHLuvvvufPrTn86JJ56Y4447LosWLRq6/sKFC/OXf/mXOfXUU3Pcccdl5cqVe/08SfLhD384xx9/fI4//vi88pWvzKc+9alUVZVLL700xx13XObOnZtbb701SfLRj3403/3ud5Mk73znO3PxxRcnSa6//vp88pOfrOV3sjcCJwAAAKA2m3uXZePKJRnoX5+kykD/+mxcuaSW0On888/PLbfcku3bt2ft2rU5+eSTh567+uqrc8YZZ+Tee+/N8uXLc+mll+bZZ5/Npz/96Zx33nlZvXp1zjvvvFx55ZWZN29e1q5dm2uuuSbvf//7kySf+tSnsmDBgtx///0599xz8/jjjw9d+4Ybbsh9992XVatW5dprr01fX99udX384x/PjBkzsnz58ixfvjzJzsDouOOOyz333JMFCxbkYx/7WO69996hXVq333770OufeeaZ/Pu//3u+/OUvD4VCe/o8zzzzTL72ta9l9erVue2229LR0ZEPfvCD+fa3v53Vq1dnzZo1+eEPf5hLL700Tz75ZE477bT85Cc/SZKsX78+Dz30UJJkxYoVeeMb33jAv499ETgBAAAAtelbszTVjm27jVU7tqVvzdIDvnZnZ2cee+yx3HzzzTn77LN3e+6OO+7IZz7zmRx//PFZuHBhtm/fvltoNGjFihVDvaDOOOOM9PX15emnn85dd92V973vfUmSt7/97Tn00EOHXnPttdemq6srp5xySp544ok88sgj+611ypQp+ZM/+ZOhx8uXL8/JJ5+cuXPn5sc//nEefPDBoecGd2qddtpp2bx5c37zm9/s8/Ns374973nPe/LFL34xr3nNa7JixYpccMEFmTJlSo444oi86U1vyr333ps3vvGN+clPfpKHHnooxx57bI444og8+eSTufvuu3Pqqac2+2N/QdpG9OoAAADApDLQv2FY48N17rnnZvHixenp6dltp1FVVfnWt76V1772tbvNv+eee3Z7vOtRuUGllN2+7qqnpyc//OEPc/fdd6e9vX0o/NmfqVOnZsqUKUl2BkQf/ehHs2rVqhx55JG56qqrdrvGc9+3lLLXz5Mkl1xySd71rnflzW9+814/U5LMnDkzTz31VP71X/81p512WjZt2pRvfOMbeelLX5pDDjlkv5/hQNjhBAAAANSmrX3GsMaH6+KLL84VV1yRuXPn7jb+1re+NV/4wheGwpf7778/SXLIIYdky5YtQ/NOO+203HTTTUl2hkmHHXZYpk+fvtv4D37wgzz11FNJkqeffjqHHnpo2tvb87Of/Sw//elP91jXc99nV4Ph0mGHHZatW7fmm9/85m7PD/ZcWrFiRV72spflZS972V4/z5e+9KVs2bIll1122W6f6dZbb82OHTvyq1/9KnfddVdOOumkJMkf/dEf5fOf/3xOO+20vPGNb8zSpUtH/DhdInACAAAAatTRtThlyrTdxsqUaenoWlzL9WfNmpVPfOITzxu//PLL8+yzz6azszPHHXdcLr/88iTJ6aefnoceemioafhVV12VVatWpbOzM5dddlluvPHGJMmVV16Zu+66KyeccELuuOOOvPrVr06SvO1tb8vAwEA6Oztz+eWX55RTTtljXYsWLcpZZ5011DR8Vy9/+cvzZ3/2Z5k7d266u7tz4okn7vb8oYcemlNPPTWXXHJJrr/++n1+nqVLl+Y///M/hxqHf/WrX8073/nOdHZ2pqurK2eccUY++9nP5g/+4A+SJG984xszMDCQP/zDP8wJJ5yQTZs2jUrgVPa27Wo8mz9/frVq1apWl9G0np6eLFy4sNVlwLhgvUBzrBVonvUCzbNeJq+HH344xxxzTNPzN/cuS9+apRno35C29hnp6Fqc6XO6R7DCsWfLli1NHVtbuHBhli5dmvnz549CVc3b0++8lHJfVVVNFaqHEwAAAFCr6XO6J13AxO4ETgAAAAAt0tPT0+oSRoQeTgAAAADUyg6nccDZVwAAAGA8ETiNcZt7l2XjyiWpdmxLkgz0r8/GlUuSROgEAAAAjEmO1I1xfWuWDoVNg6od29K3ZmmLKgIAAADYN4HTGDfQv2FY4wAAADARlVJy0UUXDT0eGBjIK1/5ypxzzjn7fN3q1avz/e9/f9jvN3v27Pz6179uev7tt9+eefPmpaurK8cee2xuuOGGJMlXv/rV/PM///Ow33+8c6RujGtrn5GB/vV7HAcAAIDJ4iUveUkeeOCBbNu2LdOmTcudd96ZmTNn7vd1q1evzqpVq3L22WePWG3PPvtsFi1alJUrV2bWrFn57W9/mwcffDBJcskll4zY+45ldjiNcR1di1OmTNttrEyZlo6uxS2qCAAAAPbjpiSzszN1mN14XIOzzjor3/ve95IkN998cy644IKh55555plcfPHFOfHEEzNv3rzcdttt+d3vfpcrrrgit956a44//vjceuut2bRpU7q7u9PZ2ZlTTjkla9euTZL09fXlLW95S+bNm5ePfOQjqapq6Nrd3d15wxvekNe//vW57rrrnlfXli1bMjAwkI6OjiTJwQcfnKOPPjpJctVVV2Xp0p1tcRYuXJi/+qu/ymmnnZZjjjkm9957b971rnfl6KOPzic/+ckkyWOPPZbXve51+cAHPpDOzs68+93vTn9/f5Lksssuy7HHHpvOzs4sXrwzF/jFL36RM888M52dnTnzzDPz+OOPJ0k++MEP5uMf/3hOPfXUHHXUUfnmN7+ZJNm6dWvOPPPMnHDCCZk7d25uu+22en45zyFwGuOmz+nO4Sddk7b2mUlK2tpn5vCTrtEwHAAAgLHppiSLkvwiSdX4uii1hE7nn39+brnllmzfvj1r167NySefPPTc1VdfnTPOOCP33ntvli9fnksvvTTPPvtsPv3pT+e8887L6tWrc9555+XKK6/MvHnzsnbt2lxzzTV5//vfnyT51Kc+lQULFuT+++/PueeeOxTcJMkNN9yQ++67L6tWrcq1116bvr6+3ep6xStekXPPPTevec1rcsEFF+Smm27K73//+z1+hhe/+MW56667cskll+Qd73hHvvSlL+WBBx7IP/3TPw1d97/+67+yaNGirF27NtOnT8+Xv/zlbNq0Kd/5znfy4IMPZu3atUMB1cc+9rG8//3vz9q1a3PhhRfm4x//+NB7Pfnkk1mxYkVuv/32XHbZZUmSqVOn5jvf+U7+4z/+I8uXL8/f/M3f7Bau1UXgNA5Mn9OdOd0rcvR7f5453SuETQAAAIxdf5+k/zlj/Y3xA9TZ2ZnHHnssN9988/OOyN1xxx35zGc+k+OPPz4LFy7M9u3bdwuNBq1YsWKoF9QZZ5yRvr6+PP3007nrrrvyvve9L0ny9re/PYceeujQa6699tp0dXXllFNOyRNPPJFHHnnkedf92te+lh/96Ec56aSTsnTp0nz0ox/d42c499xzkyRz587N61//+rzqVa/KwQcfnKOOOipPPPFEkuTII4/MH//xHydJ3ve+92XFihWZPn16pk6dmg9/+MP59re/nfb29iTJ3Xffnfe+971JkosuuigrVqwYeq/u7u686EUvyrHHHptf/vKXSZKqqrJkyZJ0dnbmzW9+c9avXz/0XJ30cAIAAADq8/yMZ9/jw3Tuuedm8eLF6enp2W2nUVVV+da3vpXXvva1u82/5557dnu8p908pZTdvu6qp6cnP/zhD3P33Xenvb19KMzak7lz52bu3Lm56KKLMmfOnD3OOfjgg5MkL3rRi4a+H3w8MDCwxzpKKWlra8vKlSvzox/9KLfccku++MUv5sc//vFeP8uu77Xr577pppvyq1/9Kvfdd18OOuigzJ49e6+f50DY4QQAAADU59XDHB+miy++OFdccUXmzp272/hb3/rWfOELXxgKVu6///4kySGHHJItW7YMzTvttNNy0007z/f19PTksMMOy/Tp03cb/8EPfpCnnnoqSfL000/n0EMPTXt7e372s5/lpz/96fNq2rp1a3p6eoYer169OkceeeQL/oyPP/547r777iQ7e1UtWLAgW7duzdNPP52zzz47n//857N69eokyamnnppbbrklyc4wacGCBfu89tNPP53DDz88Bx10UJYvX55f/OIXL7jOfRE4AQAAAPW5Okn7c8baG+M1mDVrVj7xiU88b/zyyy/Ps88+m87Ozhx33HG5/PLLkySnn356HnrooaGm4VdddVVWrVqVzs7OXHbZZbnxxhuTJFdeeWXuuuuunHDCCbnjjjvy6lfvTMje9ra3ZWBgIJ2dnbn88stzyimnPO+9q6rKZz/72bz2ta/N8ccfnyuvvDJf+cpXXvBnPOaYY3LjjTems7MzmzZtyp//+Z9ny5YtOeecc9LZ2Zk3velN+dznPpdk53G/f/zHf0xnZ2f+5V/+Jf/wD/+wz2tfeOGFWbVqVebPn5+bbropr3vd615wnftSRqIxVKvNnz+/WrVqVavLaFpPT08WLlzY6jJgXLBeoDnWCjTPeoHmWS+T18MPP5xjjjmm+RfclJ09mx7Pzp1NVye5cERKG7O2bNmSQw45ZNive+yxx3LOOefkgQceGIGqmren33kp5b6qquY383o9nAAAAIB6XZhJFzCxO0fqAAAAAMaI2bNnt3x3Ux0ETgAAAMB+TcSWPOxZHb9rgRMAAACwT1OnTk1fX5/QaRKoqip9fX2ZOnXqAV1HDycAAABgn2bNmpV169blV7/6VatLGTe2b99+wKFNq0ydOjWzZs06oGsInAAAAIB9OuiggzJnzpxWlzGu9PT0ZN68ea0uo2UcqQMAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgVgInAAAAAGolcAIAAACgViMWOJVSbiilbCylPLDL2CtKKXeWUh5pfD20MV5KKdeWUh4tpawtpZyw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\n",
+      "text/plain": [
+       "<Figure size 1440x720 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Dzięki wykresowi widzimy dlaczego metoda trapezów zwróciła zły wynik w poprzednich obliczeniach. Ilość podprzedziałów dla danych w tym zadaniu była nie wystarczająca do uzyskania prawidłowego wyniku.\n",
+      "Przy mniejszej ilości przedziałów metoda Simpsona radzi sobie o wiele lepiej od metody trapezów, od samego początku uzyskujemy w miarę prawidłowy wynik, podczas gdy metoda trapezów potrzebuej co najmniej 15 przedziałów.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "def f4(x):\n",
+    "    return math.sqrt(1+(math.pi*2*math.cos(2*math.pi*x))**2) #ze wzoru na długość łuku krzywej\n",
+    "\n",
+    "w1=trap10(f4,0,48)\n",
+    "w2=simpson10(f4,0,48)\n",
+    "w3=scipy.integrate.romberg(f4,0,48)\n",
+    "\n",
+    "\n",
+    "def trapn(fx,a,b,n):\n",
+    "    x=np.linspace(a,b,n+1)\n",
+    "    boki=0\n",
+    "    for i in range(len(x)-2):\n",
+    "        boki+=fx(x[i+1])\n",
+    "    boki+=(x[0]+x[len(x)-1])/2\n",
+    "    return (x[1]-x[0]) * boki\n",
+    "\n",
+    "def simpsonn(fx,a,b,n):\n",
+    "    x=np.linspace(a,b,n+1)\n",
+    "    wynik=0\n",
+    "    for i in range(len(x)-1):\n",
+    "        wynik+=(x[i+1]-x[i])*(fx(x[i])+4*fx((x[i]+x[i+1])/2)+fx(x[i+1]))/6\n",
+    "    return wynik\n",
+    "\n",
+    "trapW=[]\n",
+    "simpsonW=[]\n",
+    "intervals=np.linspace(1,100,100)\n",
+    "\n",
+    "for i in intervals:\n",
+    "    trapW.append(trapn(f4,0,48,i))\n",
+    "    simpsonW.append(simpsonn(f4,0,48,i))\n",
+    "    \n",
+    "\n",
+    "\n",
+    "print(\"Metoda trapezów: \",w1)\n",
+    "print(\"Metoda Simpsona: \",w2)\n",
+    "print(\"Metoda Romberga: \",w3)\n",
+    "    \n",
+    "print('Metody Romberga i trapezów zwracają błędny wynik, poniewaz wynik odbiega od możliwego rozwiązania.')\n",
+    "print('Jedynie metoda Simpsona podaje nam względnie dobry wynik.')\n",
+    "plt.figure(figsize=(20,10))\n",
+    "plt.scatter(intervals,trapW,color='goldenrod',label=\"Metoda trapezow\")\n",
+    "plt.scatter(intervals,simpsonW,color='magenta',label=\"Metoda Simpsona\")\n",
+    "plt.xlabel('Ilość podprzedziałów')\n",
+    "plt.ylabel('l[dm]')\n",
+    "plt.grid()\n",
+    "plt.legend()\n",
+    "plt.show()\n",
+    "\n",
+    "print('Dzięki wykresowi widzimy dlaczego metoda trapezów zwróciła zły wynik w poprzednich obliczeniach. Ilość podprzedziałów dla danych w tym zadaniu była nie wystarczająca do uzyskania prawidłowego wyniku.')\n",
+    "print('Przy mniejszej ilości przedziałów metoda Simpsona radzi sobie o wiele lepiej od metody trapezów, od samego początku uzyskujemy w miarę prawidłowy wynik, podczas gdy metoda trapezów potrzebuej co najmniej 15 przedziałów.')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
